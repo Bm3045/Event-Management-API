@@ -59,7 +59,4 @@ List important NPM scripts like:
 - `npm run dev`
 - `sequelize-cli` commands
 
----
 
-
-Let me know if you’d like me to **fill this out for your exact project** — just say `generate full README from this structure`.
