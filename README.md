@@ -59,4 +59,35 @@ List important NPM scripts like:
 - `npm run dev`
 - `sequelize-cli` commands
 
+---
+# Example Requests & Responses
+🔹 POST /api/events — Create Event
+Request:
+
+POST /api/events
+Content-Type: application/json
+
+{
+  "title": "AI Hackathon",
+  "dateTime": "2025-08-10T09:00:00.000Z",
+  "location": "Mumbai",
+  "capacity": 300
+}
+
+##Success Response:
+
+Status: 201 Created
+
+{
+  "id": 1,
+  "title": "AI Hackathon",
+  "dateTime": "2025-08-10T09:00:00.000Z",
+  "location": "Mumbai",
+  "capacity": 300,
+  "updatedAt": "2025-07-16T08:20:00.123Z",
+  "createdAt": "2025-07-16T08:20:00.123Z"
+}
+
+
+
 
