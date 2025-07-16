@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Event Management API Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 6px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      cursor: pointer;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 4px;
+      white-space: pre-wrap;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Event Management API Tester</h1>
+
+  <section>
+    <h2>Create Event</h2>
+    <form id="createEventForm">
+      <input type="text" id="title" placeholder="Title" required />
+      <input type="datetime-local" id="dateTime" required />
+      <input type="text" id="location" placeholder="Location" required />
+      <input type="number" id="capacity" placeholder="Capacity (1-1000)" min="1" max="1000" required />
+      <button type="submit">Create Event</button>
+    </form>
+    <div id="createResponse"></div>
+  </section>
+
+  <hr />
+
+  <section>
+    <h2>Get Event Details</h2>
+    <form id="getEventForm">
+      <input type="number" id="eventId" placeholder="Event ID" min="1" required />
+      <button type="submit">Get Event</button>
+    </form>
+    <pre id="getResponse"></pre>
+  </section>
+
+  <script>
+    const createForm = document.getElementById('createEventForm');
+    const createResponseDiv = document.getElementById('createResponse');
+
+    createForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value.trim();
+      const dateTime = document.getElementById('dateTime').value;
+      const location = document.getElementById('location').value.trim();
+      const capacity = Number(document.getElementById('capacity').value);
+
+      createResponseDiv.textContent = '';
+      createResponseDiv.className = '';
+
+      try {
+        const res = await fetch('http://localhost:5000/api/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, dateTime, location, capacity }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          createResponseDiv.textContent = data.message || 'Error creating event';
+          createResponseDiv.className = 'error';
+        } else {
+          createResponseDiv.textContent = `Event created successfully! ID: ${data.id}`;
+          createResponseDiv.className = 'success';
+          createForm.reset();
+        }
+      } catch (err) {
+        createResponseDiv.textContent = 'Network error: ' + err.message;
+        createResponseDiv.className = 'error';
+      }
+    });
+
+    const getForm = document.getElementById('getEventForm');
+    const getResponsePre = document.getElementById('getResponse');
+
+    getForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const eventId = document.getElementById('eventId').value;
+
+      getResponsePre.textContent = 'Loading...';
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/events`);
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          getResponsePre.textContent = data.message || 'Event not found';
+          getResponsePre.style.color = 'red';
+        } else {
+          getResponsePre.textContent = JSON.stringify(data, null, 2);
+          getResponsePre.style.color = 'black';
+        }
+      } catch (err) {
+        getResponsePre.textContent = 'Network error: ' + err.message;
+        getResponsePre.style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>
